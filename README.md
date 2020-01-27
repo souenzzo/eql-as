@@ -66,14 +66,15 @@ We can also do the oposite operation, run our parser asking for the data
 
 ## Datomic
 
-You can use it with datomic, using [eql-datomic]("https://github.com/souenzzo/eql-datomic")
+You can use it with datomic, using [eql-datomic](https://github.com/souenzzo/eql-datomic)
 
 ```clojure
 ;; (require '[br.com.souenzzo.eql-as.alpha :as eql-as]
 ;;          '[br.com.souenzzo.eql-datomic :as eqld]
+;;          '[edn-query-language.core :as eql]
 ;;          '[datomic.api :as d])
 (let [pattern (->> {::eql-as/as-map user-as-map
-                    ::eql-as/as-key :pathom/as}
+                    ::eql-as/as-key :as}
                    eql-as/ident-query
                    eql/query->ast
                    eqld/ast->query)]
