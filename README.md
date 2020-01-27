@@ -9,6 +9,12 @@ This library do not implement renaming. It helps you to create queries that used
 
 ## Usage
 
+Add to your `deps.edn`
+```clojure
+br.com.souenzzo/eql-as {:git/url "https://github.com/souenzzo/eql-as.git"
+                        :sha     "85815f409b149d237b542fd64f134747df71100d"}
+```
+
 Let's start with a sample data, like
 
 ```json
