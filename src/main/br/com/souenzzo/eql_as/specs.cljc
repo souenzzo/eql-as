@@ -1,6 +1,6 @@
 (ns br.com.souenzzo.eql-as.specs
   (:require [clojure.spec.alpha :as s]
-            [br.com.souenzzo.eql-as :as eql-as]))
+            [br.com.souenzzo.eql-as.alpha :as eql-as]))
 
 (s/def ::eql-as/ident
   (s/or :key any?

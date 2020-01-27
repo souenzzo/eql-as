@@ -1,6 +1,14 @@
 (ns br.com.souenzzo.eql-as-test
-  (:require [br.com.souenzzo.eql-as :as eql-as]
+  (:require [br.com.souenzzo.eql-as.alpha :as eql-as]
             [clojure.test :refer [deftest is testing]]))
+
+(comment
+  ;; query back to alias-map
+  (into {}
+        (for [{:keys [dispatch-key children params] :as a} (:children x)]
+          [dispatch-key (if children
+                          [(:as params) (f a)]
+                          (:as params))])))
 
 (deftest eql-as
   (is (= (eql-as/as-query {::eql-as/as-map {:name    :user/name
