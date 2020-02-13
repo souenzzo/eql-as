@@ -33,7 +33,7 @@ Once you run this query in this data, it will be qualified
    :address [{:street "Atlantic"}]}
  `[(:name {:pathom/as :user/name})
    {(:address {:pathom/as :user/address}) [(:street {:pathom/as :address/street})]}])
-;; => {:user/name "eql-as"
+;; => {:user/name "Alex"
 ;;     :user/address [{:address/street "Atlantic"}]
 ```
 
@@ -185,3 +185,70 @@ Pathom has a [placeholder](https://wilkerlucio.github.io/pathom/v2/pathom/2.2.0/
        (parser {})))
 ;; => {:name "Alex", :address {:street {:name "Atlantic"}}}
 ```
+
+### Advanced coercion
+
+Sometimes we need a "real" function to mae the "coercion". We can do it again with parsers and queries.
+
+```clojure
+;; (require '[br.com.souenzzo.eql-as.alpha :as eql-as]
+;;          '[com.wsscode.pathom.connect :as pc]
+;;          '[com.wsscode.pathom.core :as p])
+
+(let [register [(pc/single-attr-resolver :user/roles-str :user/roles (partial mapv (partial keyword "user.roles")))]
+      parser (p/parser {::p/plugins [(pc/connect-plugin {::pc/register register})]
+                        ::p/env     {::p/reader [p/map-reader
+                                                 pc/reader2]}})
+      data {:id    "123"
+            :roles ["admin"]}
+      qualified (->> {::eql-as/as-map {:user/id        :id
+                                       :user/roles-str :roles}
+                      ::eql-as/as-key :pathom/as}
+                     eql-as/ident-query
+                     (p/map-select data))]
+  (parser {::p/entity qualified}
+          [:user/id
+           :user/roles]))
+;; => {:user/id "123", :user/roles [:user.roles/admin]}
+```
+
+
+## Real World exmaple
+
+Let's implement a REST API, like [CreateUser](https://github.com/gothinkster/realworld/blob/master/api/swagger.json#L81)
+from [RealWorld](https://github.com/gothinkster/realworld) spec
+
+```clojure
+;; (require '[br.com.souenzzo.eql-as.alpha :as eql-as]
+;;          '[com.wsscode.pathom.core :as p])
+(let [json-params {:user {:username "souenzzo"
+                          :email    "souenzzo@souenzzo.com.br"
+                          :password "*****"}}
+      params (->> {::eql-as/as-map {:>/user [:user {:user/email    :email
+                                                    :user/password :password
+                                                    :user/slug     :username
+                                                    :image         :user/image}]}
+                   ::eql-as/as-key :pathom/as}
+                  eql-as/ident-query
+                  (p/map-select json-params))
+      returning (-> {::eql-as/as-map {:user [:>/user {:email    :user/email
+                                                      :token    :user/token
+                                                      :username :user/slug
+                                                      :bio      :user/bio
+                                                      :image    :user/image}]}
+                     ::eql-as/as-key :pathom/as}
+                    eql-as/ident-query)
+      query `[{(create-user ~(:>/user params))
+               ~returning}]]
+  query)
+;; => [{(user/create-user {:user/email "souenzzo@souenzzo.com.br",
+;;                         :user/password "*****",
+;;                         :user/slug "souenzzo"})
+;;       [({:>/user [(:user/email {:pathom/as :email})
+;;                   (:user/token {:pathom/as :token})
+;;                   (:user/slug  {:pathom/as :username})
+;;                   (:user/bio   {:pathom/as :bio})
+;;                   (:user/image {:pathom/as :image})]}
+;;         {:pathom/as :user})]}]
+```
+This query you can pipe into your parser and the return can be directly back on `:body`

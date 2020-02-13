@@ -1,14 +1,14 @@
 (ns br.com.souenzzo.eql-as.ast
   (:require [edn-query-language.core :as eql]))
 
-(defn ident-query
+(defn as-query
   [{::keys [as-map as-key] :as opts}]
   {:type     :root,
    :children (for [[k v] as-map
                    :let [ref? (vector? v)]]
                (cond-> (cond
-                         ref? (let [ast (ident-query (assoc opts
-                                                       ::as-map (last v)))]
+                         ref? (let [ast (as-query (assoc opts
+                                                    ::as-map (last v)))]
                                 (assoc ast
                                   :type :join
                                   :dispatch-key k
@@ -21,14 +21,14 @@
                                                        (first v)
                                                        v)})))})
 
-(defn as-query
+(defn ident-query
   [{::keys [as-map as-key] :as opts}]
   {:type     :root,
    :children (for [[k v] as-map
                    :let [ref? (vector? v)]]
                (cond-> (cond
-                         ref? (let [ast (as-query (assoc opts
-                                                    ::as-map (last v)))]
+                         ref? (let [ast (ident-query (assoc opts
+                                                       ::as-map (last v)))]
                                 (assoc ast
                                   :type :join
                                   :dispatch-key (first v)

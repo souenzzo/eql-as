@@ -6,14 +6,14 @@
 
 (defn as-query
   [{::keys [as-map as-key]}]
-  (-> (ast/ident-query {::ast/as-map as-map
-                        ::ast/as-key as-key})
+  (-> (ast/as-query {::ast/as-map as-map
+                     ::ast/as-key as-key})
       (eql/ast->query)))
 
 (defn ident-query
   [{::keys [as-map as-key]}]
-  (-> (ast/as-query {::ast/as-map as-map
-                     ::ast/as-key as-key})
+  (-> (ast/ident-query {::ast/as-map as-map
+                        ::ast/as-key as-key})
       (eql/ast->query)))
 
 (defn reverse
