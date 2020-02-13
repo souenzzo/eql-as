@@ -161,3 +161,27 @@ You can use this libs with [spec](https://github.com/clojure/spec.alpha) to get 
   (s/valid? (s/keys :req [::born]) (sc/coerce-structure (p/map-select data pattern))))
 ;; => true
 ```
+
+
+### placeholders 
+
+Pathom has a [placeholder](https://wilkerlucio.github.io/pathom/v2/pathom/2.2.0/core/placeholders.html) concept and you can use it.
+```clojure
+;; (require '[br.com.souenzzo.eql-as.alpha :as eql-as]
+;;          '[com.wsscode.pathom.connect :as pc]
+;;          '[com.wsscode.pathom.core :as p])
+
+(let [parser (p/parser {::p/plugins [(pc/connect-plugin {::pc/register [(pc/constantly-resolver :user/name "Alex")
+                                                                        (pc/constantly-resolver :user/address {})
+                                                                        (pc/constantly-resolver :address/street "Atlantic")]})]
+                        ::p/env     {::p/reader [p/map-reader
+                                                 pc/reader2
+                                                 p/env-placeholder-reader]
+                                     ::p/placeholder-prefixes #{">"}}})]
+  (->> {::eql-as/as-map {:user/name    :name
+                         :user/address [:address {:>/street [:street {:address/street :name}]}]}
+        ::eql-as/as-key :pathom/as}
+       eql-as/as-query
+       (parser {})))
+;; => {:name "Alex", :address {:street {:name "Atlantic"}}}
+```
