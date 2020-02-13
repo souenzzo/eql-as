@@ -138,6 +138,26 @@ You can use this libs with [spec-coerce](https://github.com/wilkerlucio/spec-coe
       pattern (->> {::eql-as/as-map {::born :born-date}
                     ::eql-as/as-key :pathom/as}
                    eql-as/ident-query)]
-  (sc/coerce-structure (p/map-select data pattern))
+  (sc/coerce-structure (p/map-select data pattern)))
 ;; => {::born #inst"1993"}
+```
+
+### validation
+
+You can use this libs with [spec](https://github.com/clojure/spec.alpha) to get validation (usually after coercion)
+
+```clojure
+;; (require '[br.com.souenzzo.eql-as.alpha :as eql-as]
+;;          '[clojure.spec.alpha :as s]
+;;          '[com.wsscode.pathom.core :as p]
+;;          '[spec-coerce.core :as sc])
+
+(s/def ::born inst?)
+
+(let [data {:born-date "1993"}
+      pattern (->> {::eql-as/as-map {::born :born-date}
+                    ::eql-as/as-key :pathom/as}
+                   eql-as/ident-query)]
+  (s/valid? (s/keys :req [::born]) (sc/coerce-structure (p/map-select data pattern))))
+;; => true
 ```
