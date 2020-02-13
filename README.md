@@ -5,14 +5,46 @@ Utility functions to create [EQL](http://edn-query-language.org) queries with "r
 ## How? 
 
 This library do not implement renaming. It helps you to create queries that used with EQL parsers like 
-[pathtom](https://github.com/wilkerlucio/pathom) will result in a renaming
+[pathom](https://github.com/wilkerlucio/pathom) will result in a renaming
+
+### Quick example:
+
+Let's say that you have a unqualified map:
+
+```clojure
+{:name    "Alex"
+ :address [{:street "Atlantic"}]}
+```
+
+You can create a EQL Query describing the qualify process, like this
+```clojure
+[(:name {:pathom/as :user/name})
+ {(:address {:pathom/as :user/address}) [(:street {:pathom/as :address/street})]}]
+```
+
+In [pathom](https://github.com/wilkerlucio/pathom) case, it use `:pathom/as` as `alias` keyword.
+
+Once you run this query in this data, it will be qualified
+
+```clojure
+;; (require '[com.wsscode.pathom.core :as p])
+(p/map-select
+  {:name    "Alex"
+   :address [{:street "Atlantic"}]}
+  [(:name {:pathom/as :user/name})
+   {(:address {:pathom/as :user/address}) [(:street {:pathom/as :address/street})]}])
+;; => {:user/name "eql-as"
+;;     :user/address [{:address/street "Atlantic"}]
+```
+
+We now have a "free" map-qualifier. `eql-as` will help you to create this kind of query.
 
 ## Usage
 
 Add to your `deps.edn`
 ```clojure
 br.com.souenzzo/eql-as {:git/url "https://github.com/souenzzo/eql-as.git"
-                        :sha     "85815f409b149d237b542fd64f134747df71100d"}
+                        :sha     "a4421a0618856eadbcd0ca368851a0621bde2505"}
 ```
 
 Let's start with a sample data, like
@@ -22,13 +54,17 @@ Let's start with a sample data, like
  "address": {"street": "Atlantic"}}
 ```
 
-Then we create a `as-map`, that specify how you want to "qualify" your data
+Then we create a `as-map`, that specify how you want to "qualify" your data.
+
+Here we say `{:the-final-name-that-i-want :the-name-on-original-data}`
 
 ```clojure
 (def user-as-map
-  {:name    :user/name
-   :address [:user/address {:street :address/street}]}) 
+  {:user/name    :name
+   :user/address [:address {:address/street :street}]}) 
 ```
+
+### Qualify a map
 
 Now we can create a query that [pathtom](https://github.com/wilkerlucio/pathom) will know who to qualify your data
 
@@ -39,11 +75,13 @@ Now we can create a query that [pathtom](https://github.com/wilkerlucio/pathom) 
 
 (->> {::eql-as/as-map user-as-map
       ::eql-as/as-key :pathom/as}
-     eql-as/as-query
+     eql-as/ident-query
      (p/map-select {:name "Alex"
                     :address {:street "Atlantic"}}))
 ;; => {:user/name "Alex", :user/address {:address/street "Atlantic"}}
 ```
+
+### Request a query, with unqualified keys.
 
 We can also do the oposite operation, run our parser asking for the data
 
@@ -59,12 +97,12 @@ We can also do the oposite operation, run our parser asking for the data
                                                  pc/reader2]}})]
   (->> {::eql-as/as-map user-as-map
         ::eql-as/as-key :pathom/as}
-       eql-as/ident-query
+       eql-as/as-query
        (parser {})))
 ;; => {:name "Alex", :address {:street "Atlantic"}}
 ```
 
-## Datomic
+### Datomic
 
 You can use it with datomic, using [eql-datomic](https://github.com/souenzzo/eql-datomic)
 
@@ -80,4 +118,26 @@ You can use it with datomic, using [eql-datomic](https://github.com/souenzzo/eql
                    eqld/ast->query)]
   (d/pull db pattern user-id))
 ;; => => {:name "Alex", :address {:street "Atlantic"}}
+```
+
+
+## Tips and tricks
+
+### coercion
+
+You can use this libs with [spec-coerce](https://github.com/wilkerlucio/spec-coerce) to get coercion
+
+```clojure
+;; (require '[br.com.souenzzo.eql-as.alpha :as eql-as]
+;;          '[clojure.spec.alpha :as s]
+;;          '[spec-coerce.core :as sc])
+
+(s/def ::born inst?)
+
+(let [data {:born-date "1993"}
+      pattern (->> {::eql-as/as-map {::born :born-date}
+                    ::eql-as/as-key :as}
+                   eql-as/ident-query)]
+  (sc/coerce-structure (p/map-select data pattern))
+;; => {::born #inst"1993"}
 ```
