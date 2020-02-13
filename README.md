@@ -31,7 +31,7 @@ Once you run this query in this data, it will be qualified
 (p/map-select
   {:name    "Alex"
    :address [{:street "Atlantic"}]}
-  [(:name {:pathom/as :user/name})
+ `[(:name {:pathom/as :user/name})
    {(:address {:pathom/as :user/address}) [(:street {:pathom/as :address/street})]}])
 ;; => {:user/name "eql-as"
 ;;     :user/address [{:address/street "Atlantic"}]
@@ -44,7 +44,7 @@ We now have a "free" map-qualifier. `eql-as` will help you to create this kind o
 Add to your `deps.edn`
 ```clojure
 br.com.souenzzo/eql-as {:git/url "https://github.com/souenzzo/eql-as.git"
-                        :sha     "a4421a0618856eadbcd0ca368851a0621bde2505"}
+                        :sha     "e59e457c77603384276d67ed446c2d1cbc8cab85"}
 ```
 
 Let's start with a sample data, like
@@ -113,7 +113,7 @@ You can use it with datomic, using [eql-datomic](https://github.com/souenzzo/eql
 ;;          '[datomic.api :as d])
 (let [pattern (->> {::eql-as/as-map user-as-map
                     ::eql-as/as-key :as}
-                   eql-as/ident-query
+                   eql-as/as-query
                    eql/query->ast
                    eqld/ast->query)]
   (d/pull db pattern user-id))
@@ -136,7 +136,7 @@ You can use this libs with [spec-coerce](https://github.com/wilkerlucio/spec-coe
 
 (let [data {:born-date "1993"}
       pattern (->> {::eql-as/as-map {::born :born-date}
-                    ::eql-as/as-key :as}
+                    ::eql-as/as-key :pathom/as}
                    eql-as/ident-query)]
   (sc/coerce-structure (p/map-select data pattern))
 ;; => {::born #inst"1993"}
