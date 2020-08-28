@@ -22,6 +22,47 @@ You can create a EQL Query describing the qualify process, like this
  {(:address {:pathom/as :user/address}) [(:street {:pathom/as :address/street})]}]
 ```
 
+<details>
+  <summary>Click here if you can't understand this query</summary>
+
+Without params, the query will look like this
+```clojure
+[:name
+ {:address [:street]}]
+```
+this query says:
+- From the map, select the key `:name`
+- From the map, select the key `:address`
+- From the map inside `:address`, select the key `:street`
+
+Now we can add params to this query
+
+```clojure
+[(:name {})
+ {:address [:street]}]
+```
+this query says:
+- From the map, select the key `:name` with params `{}`
+....
+
+[pathom](https://github.com/wilkerlucio/pathom) know how to use some special params, like `:pathom/as`
+
+
+Without params, the query will look like this
+```clojure
+[(:name {:pathom/as :user/name})
+ {(:address {:pathom/as :user/address}) [(:street {:pathom/as :address/street})]}]
+```
+this query says:
+- From the map, select the key `:name` with params `{:pathom/as :user/name}`. Pathom will assoc `:name` as `:user/name` in the result
+- From the map, select the key `:address` with params `{:pathom/as :user/address}`.  Pathom will assoc `:address` as `:user/address` in the result
+- From the map inside `:address`, select the key `:street` with params  `{:pathom/as :address/street}`.  Pathom will assoc `:street` as `:address/street` in the result
+
+
+
+</details>
+
+
 In [pathom](https://github.com/wilkerlucio/pathom) case, it use `:pathom/as` as `alias` keyword.
 
 Once you run this query in this data, it will be qualified
