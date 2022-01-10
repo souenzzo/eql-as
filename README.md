@@ -48,7 +48,7 @@ this query says:
 [pathom](https://github.com/wilkerlucio/pathom) know how to use some special params, like `:pathom/as`
 
 
-Without params, the query will look like this
+With params, the query will look like this
 ```clojure
 [(:name {:pathom/as :user/name})
  {(:address {:pathom/as :user/address}) [(:street {:pathom/as :address/street})]}]
