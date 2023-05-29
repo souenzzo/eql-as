@@ -1,0 +1,10 @@
+{
+  "name": "@souenzzo/eql-as",
+  "scripts": {
+    "ci": "npm --audit=false --ignore-scripts=true --update-notifier=false --fund=false ci",
+    "test": "shadow-cljs release node-test"
+  },
+  "devDependencies": {
+    "shadow-cljs": "2.23.3"
+  }
+}

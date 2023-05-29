@@ -1,0 +1,8 @@
+{:deps   {:aliases [:dev]}
+ :builds {:node-test {:target    :node-test
+                      :output-to "target/nodejs-test.js"
+                      :autorun   true}
+          #_#_:karma {:target    :karma
+                      :output-to "target/ci.js"}
+          #_#_:browser {:target   :browser-test
+                        :test-dir "out/browser-test.js"}}}
