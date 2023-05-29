@@ -107,7 +107,7 @@ Here we say `{:the-final-name-that-i-want :the-name-on-original-data}`
 
 ### Qualify a map
 
-Now we can create a query that [pathtom](https://github.com/wilkerlucio/pathom) will know who to qualify your data
+Now we can create a query that [pathom](https://github.com/wilkerlucio/pathom) will know who to qualify your data
 
 ```clojure
 ;; (require '[br.com.souenzzo.eql-as.alpha :as eql-as]
