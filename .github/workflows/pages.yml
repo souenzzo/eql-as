@@ -20,6 +20,6 @@ jobs:
           node-version: "20.2.0"
       - run: "npm run-script ci"
       - run: "clojure -M:dev -m eql-as.build"
-      - uses: "upload-artifact@v3.1.2"
+      - uses: "actions/upload-artifact@v3.1.2"
         with:
           path: "target/*.jar"
