@@ -5,7 +5,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v3.5.2"
-      - uses: "./.github/workflows/setup.yml"
+      - uses: "./.github/workflows/setup"
       - run: "clojure -M:dev -m eql-as.build"
       - uses: "actions/upload-artifact@v3.1.2"
         with:
