@@ -1,3 +1,5 @@
 *.iml
 .idea/
 .nrepl-port
+.cpcache/
+node_modules/
