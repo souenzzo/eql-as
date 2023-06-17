@@ -8,7 +8,6 @@ jobs:
         with:
           java-version: "20.0.1"
           distribution: "temurin"
-          cache: "maven"
       - uses: "actions/setup-node@v3.6.0"
         with:
           node-version: "20.2.0"
@@ -18,3 +17,5 @@ jobs:
       - uses: "DeLaGuardo/setup-clojure@11.0"
         with:
           cli: "1.11.1.1273"
+      - uses: "actions/cache@v3.3.1"
+        key: "${{ runner.os }}-${{ hashFiles('**/{deps.edn,package-lock.json}') }}"

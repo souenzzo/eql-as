@@ -2,4 +2,5 @@ on: "workflow_dispatch"
 
 jobs:
   call-test:
-    uses: "./.github/workflows/setup.yml"
+    steps:
+      - uses: "./.github/workflows/setup.yml"
