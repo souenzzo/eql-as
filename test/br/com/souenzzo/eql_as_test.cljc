@@ -1,6 +1,6 @@
 (ns br.com.souenzzo.eql-as-test
   (:require [br.com.souenzzo.eql-as.alpha :as eql-as]
-            [clojure.test :refer [deftest is testing]]))
+            [clojure.test :refer [deftest is]]))
 
 (comment
   ;; query back to alias-map

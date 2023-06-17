@@ -42,4 +42,4 @@ jobs:
           node-version: "20.2.0"
       - run: "npm run-script ci"
       - run: "clojure -A:dev -P"
-      - run: "npm run test"
+      - run: "npm test"
