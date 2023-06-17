@@ -1,12 +1,5 @@
-on: workflow_dispatch
+on: [push]
 
 jobs:
-  build:
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: "actions/checkout@v3.5.2"
-      - uses: "./.github/actions/setup"
-      - run: "clojure -M:dev -m eql-as.build"
-      - uses: "actions/upload-artifact@v3.1.2"
-        with:
-          path: "target/*.jar"
+  call-test:
+    uses: ./workflows/test.yml@master
