@@ -7,6 +7,7 @@ jobs:
       - uses: "actions/setup-java@v3.11.0"
         with:
           java-version: "20.0.1"
+          distribution: "temurin"
           cache: "maven"
       - uses: "actions/setup-node@v3.6.0"
         with:
