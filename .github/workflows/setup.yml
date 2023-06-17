@@ -14,9 +14,9 @@ jobs:
       - uses: "actions/cache@v3.3.1"
         with:
           key: "${{ runner.os }}-${{ hashFiles('**/deps.edn') }}"
-        path: |
-          ~/.m2/repository
-          ~/.gitlibs
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
       - run: "clojure -A:dev:test-runner -P"
       - run: "clojure -M:dev:test-runner"
   test-cljs:
