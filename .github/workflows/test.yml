@@ -1,7 +1,5 @@
 on: "workflow_dispatch"
 
 jobs:
-  call-test:
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: "./.github/workflows/setup.yml"
+  run-test:
+    uses: "./.github/workflows/setup.yml"

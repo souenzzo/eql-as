@@ -1,7 +1,7 @@
 {
   "name": "@souenzzo/eql-as",
   "scripts": {
-    "ci": "npm --audit=false --ignore-scripts=true --update-notifier=false --fund=false ci",
+    "ci": "npm --audit=false --ignore-scripts=true --update-notifier=false --fund=false --loglevel=error ci",
     "test": "shadow-cljs release node-test"
   },
   "devDependencies": {
