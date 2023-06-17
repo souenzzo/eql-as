@@ -1,5 +1,0 @@
-on: [push]
-
-jobs:
-  call-test:
-    uses: ./workflows/test.yml@master
